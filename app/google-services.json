@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "348057957186",
+    "firebase_url": "https://smallparking-41c54-default-rtdb.firebaseio.com",
+    "project_id": "smallparking-41c54",
+    "storage_bucket": "smallparking-41c54.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348057957186:android:229f5c27ae5d45ab0f0edb",
+        "android_client_info": {
+          "package_name": "com.example.smartparking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf13l8QNWgaG9u_rRxOikjdq-qCpxQiOM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,47 +1,112 @@
 package com.example.smartparking
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.smartparking.ui.theme.SmartParkingTheme
+import com.example.smartparking.view.*
+import com.example.smartparking.viewmodel.AuthUiState
+import com.example.smartparking.viewmodel.AuthViewModel
+import com.example.smartparking.model.UserRole
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        FirebaseApp.initializeApp(this)
         setContent {
             SmartParkingTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavigation()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun AppNavigation() {
+    val navController = rememberNavController()
+    val authViewModel: AuthViewModel = viewModel()
+    val authState by authViewModel.uiState.collectAsState()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SmartParkingTheme {
-        Greeting("Android")
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            LoginScreen(
+                navController = navController,
+                vm = authViewModel
+            )
+        }
+
+        composable("register") {
+            RegisterScreen(
+                navController = navController,
+                vm = authViewModel
+            )
+        }
+
+        composable("dashboard_user") {
+            ParkingStatusScreen(navController = navController,
+                vm = authViewModel)
+        }
+
+        composable("dashboard_guard") {
+            DashboardGuardScreen(
+                navController = navController,
+                vm = authViewModel
+            )
+        }
+        // >>> Timeline route
+        composable("timeline/{date}/{vehicleType}/{plate}") { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date")!!
+            val vehicleType = backStackEntry.arguments?.getString("vehicleType")!!
+            val plate = backStackEntry.arguments?.getString("plate")!!
+
+            TimelineScreen(
+                date = date,
+                vehicleType = vehicleType,
+                plate = plate,
+                navController = navController
+            )
+        }
+    }
+
+    // Quan sát authState để điều hướng
+    LaunchedEffect(authState) {
+        Log.d("MainActivity", "Auth State: $authState")
+
+        if (authState is AuthUiState.Success) {
+            val userData = (authState as AuthUiState.Success).userData
+
+            Log.d("MainActivity", "Login Success - User: ${userData.email}, Role: ${userData.role}")
+
+            // Điều hướng dựa trên role
+            val destination = when (userData.role) {
+                UserRole.GUARD -> {
+                    Log.d("MainActivity", "Navigating to dashboard_guard")
+                    "dashboard_guard"
+                }
+                UserRole.USER -> {
+                    Log.d("MainActivity", "Navigating to dashboard_user")
+                    "dashboard_user"
+                }
+                else -> {
+                    Log.d("MainActivity", "Unknown role: ${userData.role}, navigating to dashboard_user")
+                    "dashboard_user"
+                }
+            }
+
+            navController.navigate(destination) {
+                popUpTo("login") { inclusive = true }
+            }
+
+            authViewModel.resetState()
+        }
+
     }
 }
