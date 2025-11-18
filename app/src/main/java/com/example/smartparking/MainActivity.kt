@@ -61,11 +61,6 @@ fun AppNavigation() {
                 vm = authViewModel
             )
         }
-//        composable("history_list") {
-//            ListHistoryScreen(navController)
-//        }
-
-        // >>> Timeline route
 
     }
 
@@ -90,7 +85,7 @@ fun AppNavigation() {
                 }
                 else -> {
                     Log.d("MainActivity", "Unknown role: ${userData.role}, navigating to dashboard_user")
-                    "dashboard_user"
+                    "login"
                 }
             }
 

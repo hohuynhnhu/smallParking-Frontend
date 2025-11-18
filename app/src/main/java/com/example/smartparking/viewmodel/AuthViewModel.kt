@@ -20,18 +20,12 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
     val uiState: StateFlow<AuthUiState> = _uiState
 
-    // 🔥 Thêm userData StateFlow để các screen có thể lấy thông tin user
     val userData: StateFlow<UserData?> = repository.userData
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = null
         )
-
-    /**
-     * Đăng ký user mới
-     * Chú ý: Cần truyền confirmPassword để match với backend
-     */
     fun register(request: RegisterRequest) {
         // Validate input trước khi gửi
         if (!validateRegisterInput(request)) {

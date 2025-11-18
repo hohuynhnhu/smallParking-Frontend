@@ -42,6 +42,15 @@ fun RegisterScreen(navController: NavController, vm: AuthViewModel = viewModel()
 
     val state by vm.uiState.collectAsState()
 
+
+    LaunchedEffect(state) {
+        if (state is AuthUiState.Success) {
+            navController.navigate("login") {
+                popUpTo("register") { inclusive = true }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -170,20 +179,32 @@ fun RegisterScreen(navController: NavController, vm: AuthViewModel = viewModel()
                 }
 
                 Spacer(Modifier.height(8.dp))
+//                when (state) {
+//                    is AuthUiState.Loading -> CircularProgressIndicator(color = Color.White)
+//                    is AuthUiState.Error -> Text(
+//                        (state as AuthUiState.Error).message,
+//                        color = MaterialTheme.colorScheme.error
+//                    )
+//                    is AuthUiState.Success -> {
+//                        Text("Đăng ký thành công!", color = Color.White)
+//                        navController.navigate("login") {
+//                            popUpTo("login") { inclusive = true }
+//                        }
+//                    }
+//                    is AuthUiState.Success -> Text("Đăng ký thành công!", color = Color.Green)
+//
+//                    else -> {}
+//                }
                 when (state) {
                     is AuthUiState.Loading -> CircularProgressIndicator(color = Color.White)
                     is AuthUiState.Error -> Text(
                         (state as AuthUiState.Error).message,
                         color = MaterialTheme.colorScheme.error
                     )
-                    is AuthUiState.Success -> {
-                        Text("Đăng ký thành công!", color = Color.White)
-                        navController.navigate("login") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    }
+                    is AuthUiState.Success -> Text("Đăng ký thành công!", color = Color.Green)
                     else -> {}
                 }
+
             }
         }
     }
