@@ -61,6 +61,8 @@ dependencies {
     implementation (platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation ("com.google.firebase:firebase-database")
 
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

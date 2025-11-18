@@ -61,19 +61,12 @@ fun AppNavigation() {
                 vm = authViewModel
             )
         }
-        // >>> Timeline route
-        composable("timeline/{date}/{vehicleType}/{plate}") { backStackEntry ->
-            val date = backStackEntry.arguments?.getString("date")!!
-            val vehicleType = backStackEntry.arguments?.getString("vehicleType")!!
-            val plate = backStackEntry.arguments?.getString("plate")!!
+//        composable("history_list") {
+//            ListHistoryScreen(navController)
+//        }
 
-            TimelineScreen(
-                date = date,
-                vehicleType = vehicleType,
-                plate = plate,
-                navController = navController
-            )
-        }
+        // >>> Timeline route
+
     }
 
     // Quan sát authState để điều hướng
